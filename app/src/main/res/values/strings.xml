@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">fitnessTrackerApp3</string>
+    <string name="text_weight_change">Change Weight</string>
+    <string name="text_calories">Calories:</string>
+    <string name="text_steps">Steps:</string>
+    <string name="text_Distance">Distance in Miles:</string>
+</resources>
