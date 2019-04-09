@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView distanceCount;
     private ProgressBar distanceProgress;
     private int progressReset = 0;
+    private NotificationManagerCompat notificationManagerCompat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER); //Gets step count sensor
 
         date = (Calendar.DATE);
+
+        notificationManagerCompat = NotificationManagerCompat.from(this); //Create the NotificationManager
 
         t = new Thread() {
             @Override
