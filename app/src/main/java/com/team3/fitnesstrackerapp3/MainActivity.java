@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                     .setSmallIcon(R.drawable.pedometer_icon)
                     .setContentTitle("Inactive")
-                    .setContentText("You've been inactive for more than one hour.")
+                    .setContentText("More than one hour of inactivity! Take two minutes to walk.")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                     .setDefaults(Notification.DEFAULT_VIBRATE)
