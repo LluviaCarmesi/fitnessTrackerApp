@@ -1,10 +1,12 @@
 package com.team3.fitnesstrackerapp3;
 
+import android.app.Notification;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
+import static com.team3.fitnesstrackerapp3.NotificationChannels.CHANNEL_1_ID;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private ProgressBar stepProgress;
     private SensorManager sensorManager;
@@ -29,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private boolean running = true;
     private float reset = 0;
     private Thread t;
+    private Thread inactivity;
     private int date;
     private int dateCheck;
     private ProgressBar calorieProgress;
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView distanceCount;
     private ProgressBar distanceProgress;
     private int progressReset = 0;
+    private int progressCheck = 0;
     private NotificationManagerCompat notificationManagerCompat;
 
     @Override
@@ -72,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         notificationManagerCompat = NotificationManagerCompat.from(this); //Create the NotificationManager
 
+        progressCheck = progress;
+
         t = new Thread() {
             @Override
             public void run() {
@@ -85,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                                 dateCheck = Calendar.DATE;
                             }
                         });
-                    }catch (InterruptedException e) {
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
@@ -93,6 +101,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         };
         t.start();
 
+        inactivity = new Thread() {
+            @Override
+            public void run() {
+                while (!isInterrupted()) {
+                    try {
+                        Thread.sleep(600000); //Runs every 5 seconds to check date
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                inactivityNotification();
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        inactivity.start();
     }
 
     @Override
@@ -124,20 +152,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         stepCount.setText(String.valueOf(progress)); //Shows the count of the steps everyday
         stepProgress.setProgress(progress);
 
-        if(date != dateCheck) { //If date is not the same, reset the progress
-            reset  = event.values[0]; //Will reset progress in the progress circle
+        if (date != dateCheck) { //If date is not the same, reset the progress
+            reset = event.values[0]; //Will reset progress in the progress circle
             date = dateCheck;
         }
 
-        Float calories = Float.valueOf(((weight/4000) * progress)); //Gets the value of calories
+        Float calories = Float.valueOf(((weight / 4000) * progress)); //Gets the value of calories
         calorieCount.setText(String.format("%, .2f", calories)); //Sets text to the calories and formats to 2 decimal spots
-        calorieProgress.setProgress( (int) ((weight/4000) * (progress))); //Sets progress of meter to the calories
+        calorieProgress.setProgress((int) ((weight / 4000) * (progress))); //Sets progress of meter to the calories
 
-        Float progressFloat = (float) progress ;
-        Float miles = Float.valueOf(progressFloat/2200); //Gets the value of distance
+        Float progressFloat = (float) progress;
+        Float miles = Float.valueOf(progressFloat / 2200); //Gets the value of distance
         distanceCount.setText(String.format("%, .2f", miles));
         distanceProgress.setProgress((int) (miles * 100));
-
     }
 
     @Override
@@ -148,10 +175,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void weightChange(View view) {
         weight = Float.parseFloat(weightInput.getText().toString()); //When the button is pressed, the weight value is changed
 
-        Float calories = Float.valueOf(((weight/4000) * progress)); //Gets the value of calories
+        Float calories = Float.valueOf(((weight / 4000) * progress)); //Gets the value of calories
         calorieCount.setText(String.format("%, .2f", calories)); //Sets text to the calories and formats to 2 decimal spots
-        calorieProgress.setProgress( (int) ((weight/4000) * (progress))); //Sets progress of meter to the calories
+        calorieProgress.setProgress((int) ((weight / 4000) * (progress))); //Sets progress of meter to the calories
     }
 
+    public void inactivityNotification() {
+        if (progressCheck == progress) { //Creates the notification if the amount of steps hasn't changed for an hour
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                    .setSmallIcon(R.drawable.pedometer_icon)
+                    .setContentTitle("Inactive")
+                    .setContentText("You've been inactive for more than one hour.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                    .build();
 
+            notificationManagerCompat.notify(1, notification);
+        }
+        else {
+            progressCheck = progress; //Makes them equal so that the check can happen again
+        }
+    }
 }

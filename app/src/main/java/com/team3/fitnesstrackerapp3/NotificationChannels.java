@@ -23,8 +23,7 @@ public class NotificationChannels extends Application {
                     "Inactivity",
                     NotificationManager.IMPORTANCE_HIGH
             );
-            inactivity.setDescription("You've been inactive for more than one hour." +
-                    "Please take at least two minutes to walk.");
+            inactivity.setDescription("Inactive Channel");
 
             NotificationChannel location = new NotificationChannel(
                     CHANNEL_2_ID,
