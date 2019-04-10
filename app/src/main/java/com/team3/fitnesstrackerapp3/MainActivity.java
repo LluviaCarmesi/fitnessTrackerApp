@@ -6,6 +6,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private int progressReset = 0;
     private int progressCheck = 0;
     private NotificationManagerCompat notificationManagerCompat;
+    private Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,6 +192,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     .setContentText("You've been inactive for more than one hour.")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                    .setDefaults(Notification.DEFAULT_VIBRATE)
+                    .setSound(defaultSound)
                     .build();
 
             notificationManagerCompat.notify(1, notification);

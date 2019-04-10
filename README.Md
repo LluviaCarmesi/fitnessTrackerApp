@@ -3,3 +3,5 @@ This is the real project. Please pull this code and try to implement the databas
 Update #2: I just added some comments and made the launch icon for the app.
 
 Update #3: I added the funcionality to make the notification appear when the user hasn't walked for an hour, however for some reason it comes up silently and isn't noticeable to the user. No sound was added either. Color to the notification also needs to be added.
+
+Update #4: The notification is now noticeable to the user and sound comes whenever the notification comes up. It's the default notification sound that the user has set.
