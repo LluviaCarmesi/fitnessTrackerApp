@@ -18,7 +18,7 @@ public class NotificationChannels extends Application {
 
     private void createNotificationChannels() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel inactivity = new NotificationChannel(
+            NotificationChannel inactivity = new NotificationChannel( //Creates the first and second channel with description, ID, and importance if the OS is above Android 8.0
                     CHANNEL_1_ID,
                     "Inactivity",
                     NotificationManager.IMPORTANCE_HIGH

@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         calorieProgress.setProgress( (int) ((weight/4000) * (progress))); //Sets progress of meter to the calories
 
         Float progressFloat = (float) progress ;
-        Float miles = Float.valueOf(progressFloat/2200);
+        Float miles = Float.valueOf(progressFloat/2200); //Gets the value of distance
         distanceCount.setText(String.format("%, .2f", miles));
         distanceProgress.setProgress((int) (miles * 100));
 
