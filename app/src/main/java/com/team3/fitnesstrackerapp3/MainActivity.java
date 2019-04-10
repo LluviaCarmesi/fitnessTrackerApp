@@ -177,11 +177,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void weightChange(View view) {
-        weight = Float.parseFloat(weightInput.getText().toString()); //When the button is pressed, the weight value is changed
+        if (weightInput.getText().toString() == "") {
+            Toast.makeText(this, "Please Input a number", Toast.LENGTH_SHORT);
+        } else {
+            weight = Float.parseFloat(weightInput.getText().toString()); //When the button is pressed, the weight value is changed
 
-        Float calories = Float.valueOf(((weight / 4000) * progress)); //Gets the value of calories
-        calorieCount.setText(String.format("%, .2f", calories)); //Sets text to the calories and formats to 2 decimal spots
-        calorieProgress.setProgress((int) ((weight / 4000) * (progress))); //Sets progress of meter to the calories
+            Float calories = Float.valueOf(((weight / 4000) * progress)); //Gets the value of calories
+            calorieCount.setText(String.format("%, .2f", calories)); //Sets text to the calories and formats to 2 decimal spots
+            calorieProgress.setProgress((int) ((weight / 4000) * (progress))); //Sets progress of meter to the calories
+        }
     }
 
     public void inactivityNotification() {
