@@ -9,5 +9,9 @@
     <string name="nav_height_text">Change Height</string>
     <string name="nav_home_text">Home</string>
     <string name="nav_settings_text">Settings</string>
-    <string name="item_communicate_text">Changes</string>
+    <string name="item_share_text">Share</string>
+    <string name="nav_header_name">Name</string>
+    <string name="nav_header_email">email</string>
+    <string name="navigation_open">Open navigation drawer</string>
+    <string name="navigation_close">Close navigation drawer</string>
 </resources>
