@@ -38,20 +38,16 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private TextView calorieCount;
     private boolean running = true;
     private float reset = 0;
-    private Thread t;
-    private Thread inactivity;
     private int today = 0;
     private int lastTimeStarted = 0;
     private ProgressBar calorieProgress;
-    private EditText weightInput;
     private TextView distanceCount;
     private ProgressBar distanceProgress;
-    private int progressReset = 0;
     private int progressCheck = 0;
     private NotificationManagerCompat notificationManagerCompat;
     private Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     private SharedPreferences settings;
-
+    private Context context;
 
     @Nullable
     @Override
@@ -72,7 +68,9 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         distanceProgress.setMax(500);
         distanceProgress.setProgress(0);
 
-        notificationManagerCompat = NotificationManagerCompat.from(getActivity()); //Create the NotificationManager
+        context = getActivity().getApplicationContext();
+
+        notificationManagerCompat = NotificationManagerCompat.from(context); //Create the NotificationManager
 
         progressCheck = progress;
 
@@ -86,6 +84,8 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         sensorManager = (SensorManager) this.getActivity().getSystemService(Context.SENSOR_SERVICE); //Gets the sensor manager
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER); //Gets step count sensor
 
+        InactivityCheck inactivityCheck = new InactivityCheck();
+        new Thread(inactivityCheck).start();
     }
 
     @Override
@@ -99,24 +99,22 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             Toast.makeText(getActivity(), "No sensor detected. App needs sensor. Sorry.", Toast.LENGTH_LONG).show(); //Will show if phone doesn't have built in sensor
         }
 
-        settings  = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         lastTimeStarted = settings.getInt("last_time_started", -1);
         Calendar calendar = Calendar.getInstance();
         today = calendar.get(Calendar.DAY_OF_YEAR);
 
-        if(today!= lastTimeStarted) {
+        if (today != lastTimeStarted) {
 
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt("last_time_started", today);
-            editor.commit();
+            editor.apply();
         }
     }
 
     public void onPause() {
         super.onPause();
         running = false; //Stops running once app is paused in activity state
-        progressReset = progress; //Saves the progress once the app is not in focus
-
     }
 
     public void onSensorChanged(SensorEvent event) {
@@ -127,7 +125,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         stepCount.setText(String.valueOf(progress)); //Shows the count of the steps everyday
         stepProgress.setProgress(progress);
 
-        if (lastTimeStarted!= lastTimeStarted) { //If date is not the same, reset the progress
+        if (today != lastTimeStarted) { //If date is not the same, reset the progress
             reset = event.values[0]; //Will reset progress in the progress circle
 
         }
@@ -140,29 +138,45 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         Float miles = Float.valueOf(progressFloat / 2200); //Gets the value of distance
         distanceCount.setText(String.format("%, .2f", miles));
         distanceProgress.setProgress((int) (miles * 100));
-
-        progressReset = progress; //Saves the progress once the app is not in focus
     }
 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 
-    public void inactivityNotification() {
-        if (progressCheck == progress) { //Creates the notification if the amount of steps hasn't changed for an hour
-            Notification notification = new NotificationCompat.Builder(getActivity(), CHANNEL_1_ID)
-                    .setSmallIcon(R.drawable.pedometer_icon)
-                    .setContentTitle("Inactive")
-                    .setContentText("More than one hour of inactivity! Take two minutes to walk.")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                    .setDefaults(Notification.DEFAULT_VIBRATE)
-                    .setSound(defaultSound)
-                    .build();
+    public void inactivityNotification() { //Creates the notification if the amount of steps hasn't changed for an hour
+        Notification notification = new NotificationCompat.Builder(context, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.pedometer_icon)
+                .setContentTitle("Inactive")
+                .setContentText("More than one hour of inactivity! Take two minutes to walk.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setSound(defaultSound)
+                .build();
 
-            notificationManagerCompat.notify(1, notification);
-        } else {
-            progressCheck = progress; //Makes them equal so that the check can happen again
+        notificationManagerCompat.notify(1, notification);
+
+    }
+
+    private class InactivityCheck implements Runnable {
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    Thread.sleep(10000); //Runs every hour to check if the user is inactive
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (progressCheck != progress) {
+                    progressCheck = progress;
+                } else {
+                    inactivityNotification();
+                }
+            }
         }
     }
 }
+
