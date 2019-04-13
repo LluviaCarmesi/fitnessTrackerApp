@@ -1,6 +1,9 @@
 package com.team3.fitnesstrackerapp3;
 
+import android.app.Application;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -9,6 +12,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -26,13 +30,12 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-import static com.team3.fitnesstrackerapp3.NotificationChannels.CHANNEL_1_ID;
-
 public class HomeFragment extends Fragment implements SensorEventListener {
     private ProgressBar stepProgress;
     private SensorManager sensorManager;
     private Sensor sensor;
     private int progress = 0;
+    private int notificationStop = 0;
     private float weight = 100;
     private TextView stepCount;
     private TextView calorieCount;
@@ -48,6 +51,9 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     private SharedPreferences settings;
     private Context context;
+    private volatile boolean stopThread = false;
+    public static final String CHANNEL_1_ID = "inactivity";
+    public static final String CHANNEL_2_ID = "location";
 
     @Nullable
     @Override
@@ -68,8 +74,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         distanceProgress.setMax(500);
         distanceProgress.setProgress(0);
 
-        context = getActivity().getApplicationContext();
-
         notificationManagerCompat = NotificationManagerCompat.from(context); //Create the NotificationManager
 
         progressCheck = progress;
@@ -83,6 +87,8 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
         sensorManager = (SensorManager) this.getActivity().getSystemService(Context.SENSOR_SERVICE); //Gets the sensor manager
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER); //Gets step count sensor
+
+        context = getContext().getApplicationContext();
 
         InactivityCheck inactivityCheck = new InactivityCheck();
         new Thread(inactivityCheck).start();
@@ -110,11 +116,14 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             editor.putInt("last_time_started", today);
             editor.apply();
         }
+
+        stopThread = false;
     }
 
     public void onPause() {
         super.onPause();
         running = false; //Stops running once app is paused in activity state
+        stopThread = true;
     }
 
     public void onSensorChanged(SensorEvent event) {
@@ -144,26 +153,13 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
     }
 
-    public void inactivityNotification() { //Creates the notification if the amount of steps hasn't changed for an hour
-        Notification notification = new NotificationCompat.Builder(context, CHANNEL_1_ID)
-                .setSmallIcon(R.drawable.pedometer_icon)
-                .setContentTitle("Inactive")
-                .setContentText("More than one hour of inactivity! Take two minutes to walk.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setSound(defaultSound)
-                .build();
-
-        notificationManagerCompat.notify(1, notification);
-
-    }
-
     private class InactivityCheck implements Runnable {
 
         @Override
         public void run() {
             while (true) {
+                if (stopThread)
+                    return;
                 try {
                     Thread.sleep(10000); //Runs every hour to check if the user is inactive
 
@@ -172,11 +168,46 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 }
                 if (progressCheck != progress) {
                     progressCheck = progress;
-                } else {
-                    inactivityNotification();
+                } else if (notificationStop != 2) {
+                    createNotificationChannels();
+                    notificationStop++;
                 }
             }
         }
     }
-}
 
+    private void createNotificationChannels() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel inactivity = new NotificationChannel( //Creates the first and second channel with description, ID, and importance if the OS is above Android 8.0
+                    CHANNEL_1_ID,
+                    "Inactivity",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            inactivity.setDescription("Inactive Channel");
+
+            NotificationChannel location = new NotificationChannel(
+                    CHANNEL_2_ID,
+                    "Location",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            location.setDescription("Location Channel");
+
+            NotificationManager notificationManager = getActivity().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(inactivity);
+            notificationManager.createNotificationChannel(location);
+        }
+
+        Notification notification = new NotificationCompat.Builder(context, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.pedometer_icon)
+                .setContentTitle("Inactive")
+                .setContentText("More than one hour of inactivity! Take two minutes to walk.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setSound(defaultSound)
+                .setAutoCancel(true)
+                .build();
+
+        notificationManagerCompat.notify(1, notification);
+    }
+}
