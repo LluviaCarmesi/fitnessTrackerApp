@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/nav_home_text" />
+
+        <item
+            android:id="@+id/nav_daily_goal"
+            android:icon="@drawable/pedometer_icon"
+            android:title="@string/nav_daily_goal_text" />
+
+        <item
+            android:id="@+id/nav_weight"
+            android:icon="@drawable/calorie_icon"
+            android:title="@string/nav_weight_text" />
+
+        <item
+            android:id="@+id/nav_height"
+            android:title="@string/nav_height_text" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/nav_settings_text" />
+    </group>
+
+    <item android:title="@string/item_share_text">
+        <menu>
+        </menu>
+    </item>
+
+</menu>
