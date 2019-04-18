@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private Sensor sensor;
     private int progress = 0;
     private int notificationStop = 0;
-    private float weight = 100;
+    private int weight = 100;
     private TextView stepCount;
     private TextView calorieCount;
     private boolean running = true;
@@ -66,6 +66,12 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         calorieProgress = view.findViewById(R.id.progressBar_Calories);
         distanceCount = view.findViewById(R.id.textView_Distance);
         distanceProgress = view.findViewById(R.id.progressBar_Disance);
+
+        Bundle bundle = getArguments();
+
+        if (bundle != null) {
+            weight = bundle.getInt("Weight");
+        }
 
         stepProgress.setMax(5000);
         stepProgress.setProgress(0);
@@ -139,9 +145,10 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
         }
 
-        Float calories = Float.valueOf(((weight / 4000) * progress)); //Gets the value of calories
+        Float weightFloat = (float) weight;
+        Float calories = Float.valueOf(((weightFloat / 4000) * progress)); //Gets the value of calories
         calorieCount.setText(String.format("%, .2f", calories)); //Sets text to the calories and formats to 2 decimal spots
-        calorieProgress.setProgress((int) ((weight / 4000) * (progress))); //Sets progress of meter to the calories
+        calorieProgress.setProgress((int) ((weightFloat / 4000) * (progress))); //Sets progress of meter to the calories
 
         Float progressFloat = (float) progress;
         Float miles = Float.valueOf(progressFloat / 2200); //Gets the value of distance
@@ -168,7 +175,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 }
                 if (progressCheck != progress) {
                     progressCheck = progress;
-                } else if (notificationStop != 2) {
+                } else if (!stopThread && notificationStop != 1) {
                     createNotificationChannels();
                     notificationStop++;
                 }
@@ -177,7 +184,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     }
 
     private void createNotificationChannels() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel inactivity = new NotificationChannel( //Creates the first and second channel with description, ID, and importance if the OS is above Android 8.0
                     CHANNEL_1_ID,
                     "Inactivity",
