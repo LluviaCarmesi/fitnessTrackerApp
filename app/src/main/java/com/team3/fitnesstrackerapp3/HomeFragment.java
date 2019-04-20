@@ -151,10 +151,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         stepCount.setText(String.valueOf(progress)); //Shows the count of the steps everyday
         stepProgress.setProgress(progress);
 
-        if (today != lastTimeStarted) { //If date is not the same, reset the progress
-            reset = event.values[0]; //Will reset progress in the progress circle
-        }
-
         Float weightFloat = (float) weight;
         Float calories = Float.valueOf(((weightFloat / 4000) * progress)); //Gets the value of calories
         calorieCount.setText(String.format("%, .2f", calories)); //Sets text to the calories and formats to 2 decimal spots
@@ -165,7 +161,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         distanceCount.setText(String.format("%, .2f", miles));
         distanceProgress.setProgress((int) (miles * 100));
 
-        while (today != lastTimeStarted) {
+        while (today != lastTimeStarted) { // Resets the daily step count everyday
             reset = event.values[0];
             SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
