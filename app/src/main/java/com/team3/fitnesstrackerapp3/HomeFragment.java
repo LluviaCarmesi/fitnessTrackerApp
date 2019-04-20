@@ -1,6 +1,5 @@
 package com.team3.fitnesstrackerapp3;
 
-import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,7 +13,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,7 +21,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +28,9 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 public class HomeFragment extends Fragment implements SensorEventListener {
+
+    private static String MY_PREFS = "Values";
+
     private ProgressBar stepProgress;
     private SensorManager sensorManager;
     private Sensor sensor;
@@ -49,7 +49,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private int progressCheck = 0;
     private NotificationManagerCompat notificationManagerCompat;
     private Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-    private SharedPreferences settings;
     private Context context;
     private volatile boolean stopThread = false;
     public static final String CHANNEL_1_ID = "inactivity";
@@ -66,12 +65,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         calorieProgress = view.findViewById(R.id.progressBar_Calories);
         distanceCount = view.findViewById(R.id.textView_Distance);
         distanceProgress = view.findViewById(R.id.progressBar_Disance);
-
-        Bundle bundle = getArguments();
-
-        if (bundle != null) {
-            weight = bundle.getInt("Weight");
-        }
 
         stepProgress.setMax(5000);
         stepProgress.setProgress(0);
@@ -111,7 +104,8 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             Toast.makeText(getActivity(), "No sensor detected. App needs sensor. Sorry.", Toast.LENGTH_LONG).show(); //Will show if phone doesn't have built in sensor
         }
 
-        settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
         lastTimeStarted = settings.getInt("last_time_started", -1);
         Calendar calendar = Calendar.getInstance();
         today = calendar.get(Calendar.DAY_OF_YEAR);
@@ -120,6 +114,19 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt("last_time_started", today);
+            editor.apply();
+        }
+
+        reset = settings.getFloat("resetCheck", 0);
+
+        notificationStop = settings.getInt("notifications", 0);
+
+        progress = settings.getInt("progress", 0);
+
+        if (today != lastTimeStarted) {
+            notificationStop = 0;
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt("notifications", notificationStop);
             editor.apply();
         }
 
@@ -135,6 +142,10 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         if (running) {
             progress = (int) (event.values[0] - reset);
+            SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt("progress", progress);
+            editor.apply();
         }
 
         stepCount.setText(String.valueOf(progress)); //Shows the count of the steps everyday
@@ -142,7 +153,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
         if (today != lastTimeStarted) { //If date is not the same, reset the progress
             reset = event.values[0]; //Will reset progress in the progress circle
-
         }
 
         Float weightFloat = (float) weight;
@@ -154,6 +164,15 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         Float miles = Float.valueOf(progressFloat / 2200); //Gets the value of distance
         distanceCount.setText(String.format("%, .2f", miles));
         distanceProgress.setProgress((int) (miles * 100));
+
+        while (today != lastTimeStarted) {
+            reset = event.values[0];
+            SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putFloat("resetCheck", reset);
+            editor.apply();
+            break;
+        }
     }
 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -168,7 +187,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 if (stopThread)
                     return;
                 try {
-                    Thread.sleep(10000); //Runs every hour to check if the user is inactive
+                    Thread.sleep(3600000); //Runs every hour to check if the user is inactive
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -178,6 +197,10 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 } else if (!stopThread && notificationStop != 1) {
                     createNotificationChannels();
                     notificationStop++;
+                    SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putInt("notifications", notificationStop);
+                    editor.apply();
                 }
             }
         }

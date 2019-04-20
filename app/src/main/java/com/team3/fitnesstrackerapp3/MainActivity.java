@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new HomeFragment()).commit();
                 break;
-            case R.id.nav_weight:
+            case R.id.nav_attribute:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new WeightFragment()).commit();
                 break;

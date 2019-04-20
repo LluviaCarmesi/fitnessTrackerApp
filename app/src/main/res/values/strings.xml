@@ -5,7 +5,7 @@
     <string name="text_steps">Steps:</string>
     <string name="text_Distance">Miles:</string>
     <string name="nav_daily_goal_text">Daily Goal</string>
-    <string name="nav_weight_text">Change Weight</string>
+    <string name="nav_attribute_text">Change Attributes</string>
     <string name="nav_height_text">Change Height</string>
     <string name="nav_home_text">Home</string>
     <string name="nav_settings_text">Settings</string>
