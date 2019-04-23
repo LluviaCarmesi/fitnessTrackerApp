@@ -53,6 +53,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private volatile boolean stopThread = false;
     public static final String CHANNEL_1_ID = "inactivity";
     public static final String CHANNEL_2_ID = "location";
+    private int dailyGoal = 5000;
 
     @Nullable
     @Override
@@ -66,11 +67,26 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         distanceCount = view.findViewById(R.id.textView_Distance);
         distanceProgress = view.findViewById(R.id.progressBar_Disance);
 
-        stepProgress.setMax(5000);
+        SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
+
+        Bundle bundle = getArguments();
+
+        if (bundle != null) {
+            if (bundle.getInt("dailyGoal") >= 1000) {
+                dailyGoal = bundle.getInt("dailyGoal");
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putInt("daily_goal", dailyGoal);
+                editor.apply();
+            }
+        }
+
+        dailyGoal = settings.getInt("daily_goal", 5000);
+
+        stepProgress.setMax(dailyGoal);
         stepProgress.setProgress(0);
-        calorieProgress.setMax(1000);
+        calorieProgress.setMax(dailyGoal / 40);
         calorieProgress.setProgress(0);
-        distanceProgress.setMax(500);
+        distanceProgress.setMax(dailyGoal / 19);
         distanceProgress.setProgress(0);
 
         notificationManagerCompat = NotificationManagerCompat.from(context); //Create the NotificationManager
@@ -110,11 +126,11 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         Calendar calendar = Calendar.getInstance();
         today = calendar.get(Calendar.DAY_OF_YEAR);
 
-        if (today != lastTimeStarted) {
-
+        while (today != lastTimeStarted) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt("last_time_started", today);
             editor.apply();
+            break;
         }
 
         reset = settings.getFloat("resetCheck", 0);
@@ -123,11 +139,12 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
         progress = settings.getInt("progress", 0);
 
-        if (today != lastTimeStarted) {
+        while (today != lastTimeStarted) {
             notificationStop = 0;
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt("notifications", notificationStop);
             editor.apply();
+            break;
         }
 
         stopThread = false;
@@ -191,7 +208,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 if (progressCheck != progress) {
                     progressCheck = progress;
                 } else if (!stopThread && notificationStop != 1) {
-                    createNotificationChannels();
+                    createNotificationChannelInactivity();
                     notificationStop++;
                     SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = settings.edit();
@@ -202,7 +219,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         }
     }
 
-    private void createNotificationChannels() {
+    private void createNotificationChannelInactivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel inactivity = new NotificationChannel( //Creates the first and second channel with description, ID, and importance if the OS is above Android 8.0
                     CHANNEL_1_ID,
@@ -211,16 +228,8 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             );
             inactivity.setDescription("Inactive Channel");
 
-            NotificationChannel location = new NotificationChannel(
-                    CHANNEL_2_ID,
-                    "Location",
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            location.setDescription("Location Channel");
-
             NotificationManager notificationManager = getActivity().getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(inactivity);
-            notificationManager.createNotificationChannel(location);
         }
 
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_1_ID)

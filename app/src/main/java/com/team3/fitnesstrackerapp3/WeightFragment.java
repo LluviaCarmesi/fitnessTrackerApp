@@ -12,39 +12,61 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
 public class WeightFragment extends Fragment {
 
     private Button buttonWeight;
     private NumberPicker numberPickerWeight;
+    private NumberPicker numberPickerFeet;
+    private NumberPicker numberPickerInches;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weight, container, false);
         numberPickerWeight = view.findViewById(R.id.numberpicker_weight);
+        numberPickerFeet = view.findViewById(R.id.numberpicker_feet);
+        numberPickerInches = view.findViewById(R.id.numberpicker_inches);
         buttonWeight = view.findViewById(R.id.button_Weight_Change);
 
         numberPickerWeight.setMaxValue(600);
-        numberPickerWeight.setMinValue(100);
+        numberPickerWeight.setMinValue(20);
         numberPickerWeight.setWrapSelectorWheel(true);
+        numberPickerWeight.setValue(160);
+
+        numberPickerFeet.setMaxValue(9);
+        numberPickerFeet.setMinValue(0);
+        numberPickerFeet.setWrapSelectorWheel(true);
+        numberPickerFeet.setValue(5);
+
+        numberPickerInches.setMaxValue(11);
+        numberPickerInches.setMinValue(0);
+        numberPickerInches.setWrapSelectorWheel(true);
+        numberPickerInches.setValue(6);
 
         buttonWeight.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
+                int inches = numberPickerInches.getValue();
+                int feet = numberPickerFeet.getValue();
 
-                Bundle bundle = new Bundle();
+                if (inches == 0 && feet == 0) {
+                    Toast.makeText(getActivity(), "Please input a valid height.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Bundle bundle = new Bundle();
 
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                HomeFragment homeFragment = new HomeFragment();
-                homeFragment.setArguments(bundle);
+                    HomeFragment homeFragment = new HomeFragment();
+                    homeFragment.setArguments(bundle);
 
-                fragmentTransaction.replace(R.id.fragment_container, homeFragment);
-                fragmentTransaction.commit();
+                    fragmentTransaction.replace(R.id.fragment_container, homeFragment);
+                    fragmentTransaction.commit();
+                }
             }
         });
 
