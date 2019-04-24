@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">fitnessTrackerApp3</string>
-    <string name="text_weight_change">Change Weight</string>
+    <string name="text_weight_change">Change Attributes</string>
     <string name="text_calories">Calories:</string>
     <string name="text_steps">Steps:</string>
     <string name="text_Distance">Miles:</string>
     <string name="nav_daily_goal_text">Daily Goal</string>
-    <string name="nav_weight_text">Change Weight</string>
+    <string name="nav_attribute_text">Change Attributes</string>
     <string name="nav_height_text">Change Height</string>
     <string name="nav_home_text">Home</string>
     <string name="nav_settings_text">Settings</string>
@@ -14,4 +14,8 @@
     <string name="nav_header_email">email</string>
     <string name="navigation_open">Open navigation drawer</string>
     <string name="navigation_close">Close navigation drawer</string>
+    <string name="text_pounds">Pounds</string>
+    <string name="text_feet">Feet</string>
+    <string name="text_inches">Inches</string>
+    <string name="text_daily_goal">Change Daily Goal</string>
 </resources>

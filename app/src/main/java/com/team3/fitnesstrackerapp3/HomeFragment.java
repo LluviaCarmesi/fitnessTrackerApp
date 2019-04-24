@@ -1,6 +1,5 @@
 package com.team3.fitnesstrackerapp3;
 
-import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,7 +13,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,7 +21,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,12 +28,15 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 public class HomeFragment extends Fragment implements SensorEventListener {
+
+    private static String MY_PREFS = "Values";
+
     private ProgressBar stepProgress;
     private SensorManager sensorManager;
     private Sensor sensor;
     private int progress = 0;
     private int notificationStop = 0;
-    private float weight = 100;
+    private int weight = 160;
     private TextView stepCount;
     private TextView calorieCount;
     private boolean running = true;
@@ -49,11 +49,12 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private int progressCheck = 0;
     private NotificationManagerCompat notificationManagerCompat;
     private Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-    private SharedPreferences settings;
     private Context context;
     private volatile boolean stopThread = false;
     public static final String CHANNEL_1_ID = "inactivity";
-    public static final String CHANNEL_2_ID = "location";
+    private int dailyGoal = 5000;
+    private int height = 66;
+    private float calories = 0;
 
     @Nullable
     @Override
@@ -67,11 +68,37 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         distanceCount = view.findViewById(R.id.textView_Distance);
         distanceProgress = view.findViewById(R.id.progressBar_Disance);
 
-        stepProgress.setMax(5000);
+        SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
+
+        Bundle bundle = getArguments();
+
+        if (bundle != null) {
+            if (bundle.getInt("dailyGoal") >= 1000) {
+                dailyGoal = bundle.getInt("dailyGoal");
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putInt("daily_goal", dailyGoal);
+                editor.apply();
+            }
+
+            if (bundle.getInt("height") >= 1) {
+                weight = bundle.getInt("weight");
+                height = bundle.getInt("height");
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putInt("userWeight", weight);
+                editor.putInt("userHeight", height);
+                editor.apply();
+            }
+        }
+
+        dailyGoal = settings.getInt("daily_goal", 5000);
+        weight = settings.getInt("userWeight", 160);
+        height = settings.getInt("userHeight", 66);
+
+        stepProgress.setMax(dailyGoal);
         stepProgress.setProgress(0);
-        calorieProgress.setMax(1000);
+        calorieProgress.setMax(dailyGoal / 40);
         calorieProgress.setProgress(0);
-        distanceProgress.setMax(500);
+        distanceProgress.setMax(dailyGoal / 19);
         distanceProgress.setProgress(0);
 
         notificationManagerCompat = NotificationManagerCompat.from(context); //Create the NotificationManager
@@ -105,16 +132,29 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             Toast.makeText(getActivity(), "No sensor detected. App needs sensor. Sorry.", Toast.LENGTH_LONG).show(); //Will show if phone doesn't have built in sensor
         }
 
-        settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
         lastTimeStarted = settings.getInt("last_time_started", -1);
         Calendar calendar = Calendar.getInstance();
         today = calendar.get(Calendar.DAY_OF_YEAR);
 
-        if (today != lastTimeStarted) {
-
+        while (today != lastTimeStarted) {
             SharedPreferences.Editor editor = settings.edit();
             editor.putInt("last_time_started", today);
             editor.apply();
+            break;
+        }
+
+        reset = settings.getFloat("resetCheck", 0);
+        notificationStop = settings.getInt("notifications", 0);
+        progress = settings.getInt("progress", 0);
+
+        while (today != lastTimeStarted) {
+            notificationStop = 0;
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt("notifications", notificationStop);
+            editor.apply();
+            break;
         }
 
         stopThread = false;
@@ -129,24 +169,47 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         if (running) {
             progress = (int) (event.values[0] - reset);
+            SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt("progress", progress);
+            editor.apply();
         }
 
         stepCount.setText(String.valueOf(progress)); //Shows the count of the steps everyday
         stepProgress.setProgress(progress);
 
-        if (today != lastTimeStarted) { //If date is not the same, reset the progress
-            reset = event.values[0]; //Will reset progress in the progress circle
+        Float weightFloat = (float) weight;
 
+        if(height < 66) {
+            calories = Float.valueOf((weightFloat / 4400) * progress); //Gets the value of calories
+            calorieProgress.setProgress((int) ((weightFloat / 4400) * (progress))); //Sets progress of meter to the calories
         }
 
-        Float calories = Float.valueOf(((weight / 4000) * progress)); //Gets the value of calories
+        if (height >= 66 && height <= 71) {
+            calories = Float.valueOf((weightFloat / 4000) * progress); //Gets the value of calories
+            calorieProgress.setProgress((int) ((weightFloat / 4000) * (progress))); //Sets progress of meter to the calories
+        }
+
+        if(height > 71) {
+            calories = Float.valueOf((weightFloat / 3600) * progress); //Gets the value of calories
+            calorieProgress.setProgress((int) ((weightFloat / 3600) * (progress))); //Sets progress of meter to the calories
+        }
+
         calorieCount.setText(String.format("%, .2f", calories)); //Sets text to the calories and formats to 2 decimal spots
-        calorieProgress.setProgress((int) ((weight / 4000) * (progress))); //Sets progress of meter to the calories
 
         Float progressFloat = (float) progress;
         Float miles = Float.valueOf(progressFloat / 2200); //Gets the value of distance
         distanceCount.setText(String.format("%, .2f", miles));
         distanceProgress.setProgress((int) (miles * 100));
+
+        while (today != lastTimeStarted) { // Resets the daily step count everyday
+            reset = event.values[0];
+            SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putFloat("resetCheck", reset);
+            editor.apply();
+            break;
+        }
     }
 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -161,23 +224,27 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 if (stopThread)
                     return;
                 try {
-                    Thread.sleep(10000); //Runs every hour to check if the user is inactive
+                    Thread.sleep(3600000); //Runs every hour to check if the user is inactive
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 if (progressCheck != progress) {
                     progressCheck = progress;
-                } else if (notificationStop != 2) {
-                    createNotificationChannels();
+                } else if (!stopThread && notificationStop != 1) {
+                    createNotificationChannelInactivity();
                     notificationStop++;
+                    SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putInt("notifications", notificationStop);
+                    editor.apply();
                 }
             }
         }
     }
 
-    private void createNotificationChannels() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    private void createNotificationChannelInactivity() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel inactivity = new NotificationChannel( //Creates the first and second channel with description, ID, and importance if the OS is above Android 8.0
                     CHANNEL_1_ID,
                     "Inactivity",
@@ -185,16 +252,8 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             );
             inactivity.setDescription("Inactive Channel");
 
-            NotificationChannel location = new NotificationChannel(
-                    CHANNEL_2_ID,
-                    "Location",
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            location.setDescription("Location Channel");
-
             NotificationManager notificationManager = getActivity().getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(inactivity);
-            notificationManager.createNotificationChannel(location);
         }
 
         Notification notification = new NotificationCompat.Builder(context, CHANNEL_1_ID)

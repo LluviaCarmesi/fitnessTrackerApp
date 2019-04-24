@@ -9,8 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
@@ -45,10 +43,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new HomeFragment()).commit();
                 break;
-            case R.id.nav_weight:
+            case R.id.nav_attribute:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new WeightFragment()).commit();
                 break;
+            case R.id.nav_daily_goal:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new GoalFragment()).commit();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
