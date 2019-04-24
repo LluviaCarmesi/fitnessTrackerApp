@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private Sensor sensor;
     private int progress = 0;
     private int notificationStop = 0;
-    private int weight = 100;
+    private int weight = 160;
     private TextView stepCount;
     private TextView calorieCount;
     private boolean running = true;
@@ -52,8 +52,9 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private Context context;
     private volatile boolean stopThread = false;
     public static final String CHANNEL_1_ID = "inactivity";
-    public static final String CHANNEL_2_ID = "location";
     private int dailyGoal = 5000;
+    private int height = 66;
+    private float calories = 0;
 
     @Nullable
     @Override
@@ -78,9 +79,20 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 editor.putInt("daily_goal", dailyGoal);
                 editor.apply();
             }
+
+            if (bundle.getInt("height") >= 1) {
+                weight = bundle.getInt("weight");
+                height = bundle.getInt("height");
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putInt("userWeight", weight);
+                editor.putInt("userHeight", height);
+                editor.apply();
+            }
         }
 
         dailyGoal = settings.getInt("daily_goal", 5000);
+        weight = settings.getInt("userWeight", 160);
+        height = settings.getInt("userHeight", 66);
 
         stepProgress.setMax(dailyGoal);
         stepProgress.setProgress(0);
@@ -134,9 +146,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         }
 
         reset = settings.getFloat("resetCheck", 0);
-
         notificationStop = settings.getInt("notifications", 0);
-
         progress = settings.getInt("progress", 0);
 
         while (today != lastTimeStarted) {
@@ -169,9 +179,23 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         stepProgress.setProgress(progress);
 
         Float weightFloat = (float) weight;
-        Float calories = Float.valueOf(((weightFloat / 4000) * progress)); //Gets the value of calories
+
+        if(height < 66) {
+            calories = Float.valueOf((weightFloat / 4400) * progress); //Gets the value of calories
+            calorieProgress.setProgress((int) ((weightFloat / 4400) * (progress))); //Sets progress of meter to the calories
+        }
+
+        if (height >= 66 && height <= 71) {
+            calories = Float.valueOf((weightFloat / 4000) * progress); //Gets the value of calories
+            calorieProgress.setProgress((int) ((weightFloat / 4000) * (progress))); //Sets progress of meter to the calories
+        }
+
+        if(height > 71) {
+            calories = Float.valueOf((weightFloat / 3600) * progress); //Gets the value of calories
+            calorieProgress.setProgress((int) ((weightFloat / 3600) * (progress))); //Sets progress of meter to the calories
+        }
+
         calorieCount.setText(String.format("%, .2f", calories)); //Sets text to the calories and formats to 2 decimal spots
-        calorieProgress.setProgress((int) ((weightFloat / 4000) * (progress))); //Sets progress of meter to the calories
 
         Float progressFloat = (float) progress;
         Float miles = Float.valueOf(progressFloat / 2200); //Gets the value of distance

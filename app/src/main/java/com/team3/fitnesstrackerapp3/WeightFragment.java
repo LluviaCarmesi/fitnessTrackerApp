@@ -52,11 +52,16 @@ public class WeightFragment extends Fragment {
 
                 int inches = numberPickerInches.getValue();
                 int feet = numberPickerFeet.getValue();
+                int weight = numberPickerWeight.getValue();
 
                 if (inches == 0 && feet == 0) {
                     Toast.makeText(getActivity(), "Please input a valid height.", Toast.LENGTH_SHORT).show();
                 } else {
+                    int height = (feet * 12) + inches;
+
                     Bundle bundle = new Bundle();
+                    bundle.putInt("height", height);
+                    bundle.putInt("weight", weight);
 
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
