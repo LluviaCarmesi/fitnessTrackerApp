@@ -96,14 +96,20 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
         stepProgress.setMax(dailyGoal);
         stepProgress.setProgress(0);
-        calorieProgress.setMax(dailyGoal / 40);
-        calorieProgress.setProgress(0);
         distanceProgress.setMax(dailyGoal / 19);
         distanceProgress.setProgress(0);
+        if(height < 66) {
+            calorieProgress.setMax((dailyGoal / 44) * (weight/100));
+        }
+        if(height >= 66 && height <= 71) {
+            calorieProgress.setMax((dailyGoal / 40) * (weight/100));
+        }
+        if(height > 71) {
+            calorieProgress.setMax((dailyGoal / 36) * (weight/100));
+        }
+        calorieProgress.setProgress(0);
 
         notificationManagerCompat = NotificationManagerCompat.from(context); //Create the NotificationManager
-
-        progressCheck = progress;
 
         return view;
     }
@@ -147,7 +153,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
         reset = settings.getFloat("resetCheck", 0);
         notificationStop = settings.getInt("notifications", 0);
-        progress = settings.getInt("progress", 0);
+        progressCheck = settings.getInt("progress", 0);
 
         while (today != lastTimeStarted) {
             notificationStop = 0;
@@ -224,14 +230,14 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 if (stopThread)
                     return;
                 try {
-                    Thread.sleep(3600000); //Runs every hour to check if the user is inactive
+                    Thread.sleep(30000); //Runs every hour to check if the user is inactive
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 if (progressCheck != progress) {
                     progressCheck = progress;
-                } else if (!stopThread && notificationStop != 1) {
+                } else if (!stopThread && notificationStop != 2) {
                     createNotificationChannelInactivity();
                     notificationStop++;
                     SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
