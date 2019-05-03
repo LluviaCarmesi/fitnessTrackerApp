@@ -16,20 +16,29 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomeFragment extends Fragment implements SensorEventListener {
 
     private static String MY_PREFS = "Values";
+    private static String STEPS_KEY = "Steps";
 
     private ProgressBar stepProgress;
     private SensorManager sensorManager;
@@ -55,6 +64,10 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private int dailyGoal = 5000;
     private int height = 66;
     private float calories = 0;
+    private Button buttonWeeklyProgress;
+    private int day = -1;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Nullable
     @Override
@@ -67,6 +80,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         calorieProgress = view.findViewById(R.id.progressBar_Calories);
         distanceCount = view.findViewById(R.id.textView_Distance);
         distanceProgress = view.findViewById(R.id.progressBar_Disance);
+        buttonWeeklyProgress = view.findViewById(R.id.button_weekly_progress);
 
         SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
 
@@ -94,22 +108,44 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         weight = settings.getInt("userWeight", 160);
         height = settings.getInt("userHeight", 66);
 
+        if (day == 6) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putInt("day", -1);
+        }
+
         stepProgress.setMax(dailyGoal);
         stepProgress.setProgress(0);
         distanceProgress.setMax(dailyGoal / 19);
         distanceProgress.setProgress(0);
-        if(height < 66) {
-            calorieProgress.setMax((dailyGoal / 44) * (weight/100));
+        if (height < 66) {
+            calorieProgress.setMax((dailyGoal / 44) * (weight / 100));
         }
-        if(height >= 66 && height <= 71) {
-            calorieProgress.setMax((dailyGoal / 40) * (weight/100));
+        if (height >= 66 && height <= 71) {
+            calorieProgress.setMax((dailyGoal / 40) * (weight / 100));
         }
-        if(height > 71) {
-            calorieProgress.setMax((dailyGoal / 36) * (weight/100));
+        if (height > 71) {
+            calorieProgress.setMax((dailyGoal / 36) * (weight / 100));
         }
         calorieProgress.setProgress(0);
 
         notificationManagerCompat = NotificationManagerCompat.from(context); //Create the NotificationManager
+
+        buttonWeeklyProgress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("day", day);
+
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                WeeklyProgressFragment weeklyProgressFragment = new WeeklyProgressFragment();
+                weeklyProgressFragment.setArguments(bundle);
+
+                fragmentTransaction.replace(R.id.fragment_container, weeklyProgressFragment);
+                fragmentTransaction.commit();
+            }
+        });
 
         return view;
     }
@@ -143,13 +179,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         lastTimeStarted = settings.getInt("last_time_started", -1);
         Calendar calendar = Calendar.getInstance();
         today = calendar.get(Calendar.DAY_OF_YEAR);
-
-        while (today != lastTimeStarted) {
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putInt("last_time_started", today);
-            editor.apply();
-            break;
-        }
 
         reset = settings.getFloat("resetCheck", 0);
         notificationStop = settings.getInt("notifications", 0);
@@ -186,7 +215,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
         Float weightFloat = (float) weight;
 
-        if(height < 66) {
+        if (height < 66) {
             calories = Float.valueOf((weightFloat / 4400) * progress); //Gets the value of calories
             calorieProgress.setProgress((int) ((weightFloat / 4400) * (progress))); //Sets progress of meter to the calories
         }
@@ -196,7 +225,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             calorieProgress.setProgress((int) ((weightFloat / 4000) * (progress))); //Sets progress of meter to the calories
         }
 
-        if(height > 71) {
+        if (height > 71) {
             calories = Float.valueOf((weightFloat / 3600) * progress); //Gets the value of calories
             calorieProgress.setProgress((int) ((weightFloat / 3600) * (progress))); //Sets progress of meter to the calories
         }
@@ -209,10 +238,88 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         distanceProgress.setProgress((int) (miles * 100));
 
         while (today != lastTimeStarted) { // Resets the daily step count everyday
+            String steps = String.valueOf(progress);
             reset = event.values[0];
             SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
+
+            Map<String, Object> note = new HashMap<>();
+            note.put(STEPS_KEY, steps);
+
+            if (day == -1) {
+
+                db.collection("Weekly Progress").document("Day 1").set(note)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Check Weekly Progress", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+            if (day == 0) {
+
+                db.collection("Weekly Progress").document("Day 2").set(note)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Check Weekly Progress", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+            if (day == 1) {
+
+                db.collection("Weekly Progress").document("Day 3").set(note)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Check Weekly Progress", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+            if (day == 2) {
+
+                db.collection("Weekly Progress").document("Day 4").set(note)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Check Weekly Progress", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+            if (day == 3) {
+
+                db.collection("Weekly Progress").document("Day 5").set(note)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Check Weekly Progress", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+            if (day == 4) {
+
+                db.collection("Weekly Progress").document("Day 6").set(note)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Check Weekly Progress", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+            if (day == 5) {
+
+                db.collection("Weekly Progress").document("Day 7").set(note)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Check Weekly Progress", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+            day++;
+            editor.putInt("day", day);
             editor.putFloat("resetCheck", reset);
+            editor.putInt("last_time_started", today);
             editor.apply();
             break;
         }
@@ -237,7 +344,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 }
                 if (progressCheck != progress) {
                     progressCheck = progress;
-                } else if (!stopThread && notificationStop != 2) {
+                } else if (!stopThread && notificationStop != 6) {
                     createNotificationChannelInactivity();
                     notificationStop++;
                     SharedPreferences settings = getContext().getSharedPreferences(MY_PREFS, Context.MODE_PRIVATE);

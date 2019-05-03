@@ -50,6 +50,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_daily_goal:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new GoalFragment()).commit();
+                break;
+            case R.id.nav_settings:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new SettingsFragment()).commit();
+                break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

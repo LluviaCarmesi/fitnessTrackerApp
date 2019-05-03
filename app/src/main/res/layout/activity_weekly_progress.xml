@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WeeklyProgress"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/textView_monday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="26dp"
+        android:text="@string/textView_monday" />
+
+    <TextView
+        android:id="@+id/textView_tuesday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="101dp"
+        android:text="@string/textView_tuesday" />
+
+    <TextView
+        android:id="@+id/textView_wednesday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="166dp"
+        android:text="@string/textView_wednesday" />
+
+    <TextView
+        android:id="@+id/textView_thursday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="241dp"
+        android:text="@string/textView_thursday" />
+
+    <TextView
+        android:id="@+id/textView_friday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="179dp"
+        android:text="@string/textView_friday" />
+
+    <TextView
+        android:id="@+id/textView_saturday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="108dp"
+        android:text="@string/textView_saturday" />
+
+    <TextView
+        android:id="@+id/textView_sunday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="25dp"
+        android:text="@string/textView_sunday" />
+
+    <TextView
+        android:id="@+id/textView_monday_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView_monday"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="137dp" />
+
+    <TextView
+        android:id="@+id/textView_tuesday_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday_steps"
+        android:layout_alignTop="@+id/textView_tuesday" />
+
+    <TextView
+        android:id="@+id/textView_wednesdau_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday_steps"
+        android:layout_alignTop="@+id/textView_wednesday" />
+
+    <TextView
+        android:id="@+id/textView_thursday_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday_steps"
+        android:layout_alignTop="@+id/textView_thursday" />
+
+    <TextView
+        android:id="@+id/textView_friday_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday_steps"
+        android:layout_alignTop="@+id/textView_friday" />
+
+    <TextView
+        android:id="@+id/textView_saturday_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday_steps"
+        android:layout_alignTop="@+id/textView_saturday" />
+
+    <TextView
+        android:id="@+id/textView_sunday_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_monday_steps"
+        android:layout_alignTop="@+id/textView_sunday" />
+</RelativeLayout>

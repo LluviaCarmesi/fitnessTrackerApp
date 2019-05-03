@@ -112,4 +112,14 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="19dp" />
 
+    <Button
+        android:id="@+id/button_weekly_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/progressBar_Calories"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/black"
+        android:textColor="@color/green"
+        android:text="@string/button_weekly_progress" />
+
 </RelativeLayout>

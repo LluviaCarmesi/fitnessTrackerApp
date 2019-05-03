@@ -32,7 +32,8 @@ public class GoalFragment extends Fragment {
         seekBarGoal = view.findViewById(R.id.seek_bar_goal);
         textViewGoal = view.findViewById(R.id.text_view_goal);
 
-        seekBarGoal.setMax(40000);
+        seekBarGoal.setMax(80);
+        seekBarGoal.setProgress(10);
 
         seekbar();
 
@@ -40,10 +41,11 @@ public class GoalFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (progress_value < 3000) {
+                if (progress_value <= 6) {
                     Toast.makeText(getActivity(), "Please try to motivate yourself", Toast.LENGTH_SHORT).show();
                 } else {
 
+                    progress_value = progress_value * 500;
                     Bundle bundle = new Bundle();
                     bundle.putInt("dailyGoal", progress_value);
 
@@ -62,7 +64,7 @@ public class GoalFragment extends Fragment {
     }
 
     public void seekbar() {
-        textViewGoal.setText("Goal: " + seekBarGoal.getProgress() + " Steps");
+        textViewGoal.setText("Goal: 5000 Steps");
 
         seekBarGoal.setOnSeekBarChangeListener(
 
@@ -72,9 +74,9 @@ public class GoalFragment extends Fragment {
 
                         progress_value = progress;
 
-                        textViewGoal.setText("Goal: " + progress + " Steps");
+                        textViewGoal.setText("Goal: " + (progress * 500) + " Steps");
 
-                        if(progress_value >= 3000) {
+                        if(progress_value >= 6) {
                             textViewGoal.setTextColor(Color.parseColor("#00CC00"));
                         }
                         else {

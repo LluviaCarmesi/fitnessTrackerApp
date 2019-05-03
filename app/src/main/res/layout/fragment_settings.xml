@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="145dp"
+        android:layout_height="136dp"
+        app:srcCompat="@drawable/pedometer_icon"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:background="@color/green"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:id="@+id/text_view_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="20dp"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/button_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:textColor="@color/green"
+        android:text="@string/button_logout"/>
+
+</LinearLayout>
