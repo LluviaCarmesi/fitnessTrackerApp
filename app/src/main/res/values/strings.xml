@@ -24,12 +24,12 @@
     <string name="button_register">Register</string>
     <string name="edit_text_password_confirm">Comfirm Password</string>
     <string name="button_logout">Logout</string>
-    <string name="textView_monday">Monday</string>
-    <string name="textView_tuesday">Tuesday</string>
-    <string name="textView_wednesday">Wednesday</string>
-    <string name="textView_thursday">Thursday</string>
-    <string name="textView_friday">Friday</string>
-    <string name="textView_saturday">Saturday</string>
-    <string name="textView_sunday">Sunday</string>
+    <string name="textView_monday">Day 1</string>
+    <string name="textView_tuesday">Day 2</string>
+    <string name="textView_wednesday">Day 3</string>
+    <string name="textView_thursday">Day 4</string>
+    <string name="textView_friday">Day 5</string>
+    <string name="textView_saturday">Day 6</string>
+    <string name="textView_sunday">Day 7</string>
     <string name="button_weekly_progress">Weekly Progress</string>
 </resources>
