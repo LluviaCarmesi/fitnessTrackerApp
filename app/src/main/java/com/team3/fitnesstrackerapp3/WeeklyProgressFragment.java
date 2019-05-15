@@ -25,7 +25,6 @@ public class WeeklyProgressFragment extends Fragment {
     private TextView textViewDay5;
     private TextView textViewDay6;
     private TextView textViewDay7;
-    private int day = 0;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference day1 = db.collection("Weekly Progress").document("Day 1");
@@ -49,309 +48,76 @@ public class WeeklyProgressFragment extends Fragment {
         textViewDay6 = view.findViewById(R.id.textView_saturday_steps);
         textViewDay7 = view.findViewById(R.id.textView_sunday_steps);
 
-        Bundle bundle = getArguments();
+        day1.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String day1 = documentSnapshot.getString(STEPS_KEY);
 
-        if (bundle != null) {
-                day = bundle.getInt("day");
-            }
+                        textViewDay1.setText(day1);
+                    }
+                });
 
-            day -= 1;
+        day2.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String day2 = documentSnapshot.getString(STEPS_KEY);
 
-        if(day == -1) {
+                        textViewDay2.setText(day2);
+                    }
+                });
 
-            day1.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day1 = documentSnapshot.getString(STEPS_KEY);
+        day3.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String day3 = documentSnapshot.getString(STEPS_KEY);
 
-                            textViewDay1.setText(day1);
-                        }
-                    });
-        }
+                        textViewDay3.setText(day3);
+                    }
+                });
 
-        if(day == 0) {
+        day4.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String day4 = documentSnapshot.getString(STEPS_KEY);
 
-            day1.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day1 = documentSnapshot.getString(STEPS_KEY);
+                        textViewDay4.setText(day4);
+                    }
+                });
 
-                            textViewDay1.setText(day1);
-                        }
-                    });
+        day5.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String day5 = documentSnapshot.getString(STEPS_KEY);
 
-            day2.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day2 = documentSnapshot.getString(STEPS_KEY);
+                        textViewDay5.setText(day5);
+                    }
+                });
 
-                            textViewDay2.setText(day2);
-                        }
-                    });
-        }
+        day6.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String day6 = documentSnapshot.getString(STEPS_KEY);
 
-        if(day == 1) {
-            day1.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day1 = documentSnapshot.getString(STEPS_KEY);
+                        textViewDay6.setText(day6);
+                    }
+                });
 
-                            textViewDay1.setText(day1);
-                        }
-                    });
+        day7.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String day7 = documentSnapshot.getString(STEPS_KEY);
 
-            day2.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day2 = documentSnapshot.getString(STEPS_KEY);
+                        textViewDay7.setText(day7);
+                    }
+                });
 
-                            textViewDay2.setText(day2);
-                        }
-                    });
-
-            day3.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day3 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay3.setText(day3);
-                        }
-                    });
-        }
-
-        if(day == 2) {
-            day1.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day1 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay1.setText(day1);
-                        }
-                    });
-
-            day2.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day2 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay2.setText(day2);
-                        }
-                    });
-
-            day3.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day3 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay3.setText(day3);
-                        }
-                    });
-
-            day4.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day4 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay4.setText(day4);
-                        }
-                    });
-        }
-
-        if(day == 3) {
-            day1.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day1 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay1.setText(day1);
-                        }
-                    });
-
-            day2.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day2 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay2.setText(day2);
-                        }
-                    });
-
-            day3.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day3 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay3.setText(day3);
-                        }
-                    });
-
-            day4.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day4 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay4.setText(day4);
-                        }
-                    });
-
-            day5.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day5 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay5.setText(day5);
-                        }
-                    });
-        }
-
-        if(day == 4) {
-            day1.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day1 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay1.setText(day1);
-                        }
-                    });
-
-            day2.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day2 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay2.setText(day2);
-                        }
-                    });
-
-            day3.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day3 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay3.setText(day3);
-                        }
-                    });
-
-            day4.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day4 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay4.setText(day4);
-                        }
-                    });
-
-            day5.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day5 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay5.setText(day5);
-                        }
-                    });
-
-            day6.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day6 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay6.setText(day6);
-                        }
-                    });
-        }
-
-        if(day == 5) {
-            day1.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day1 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay1.setText(day1);
-                        }
-                    });
-
-            day2.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day2 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay2.setText(day2);
-                        }
-                    });
-
-            day3.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day3 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay3.setText(day3);
-                        }
-                    });
-
-            day4.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day4 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay4.setText(day4);
-                        }
-                    });
-
-            day5.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day5 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay5.setText(day5);
-                        }
-                    });
-
-            day6.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day6 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay6.setText(day6);
-                        }
-                    });
-
-            day7.get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            String day7 = documentSnapshot.getString(STEPS_KEY);
-
-                            textViewDay7.setText(day7);
-                        }
-                    });
-        }
         return view;
-    }
+}
 }
