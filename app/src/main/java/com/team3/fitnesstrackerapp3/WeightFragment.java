@@ -28,7 +28,7 @@ public class WeightFragment extends Fragment {
         numberPickerWeight = view.findViewById(R.id.numberpicker_weight);
         numberPickerFeet = view.findViewById(R.id.numberpicker_feet);
         numberPickerInches = view.findViewById(R.id.numberpicker_inches);
-        buttonWeight = view.findViewById(R.id.button_Weight_Change);
+        buttonWeight = view.findViewById(R.id.button_Weight_Change); //Initializes items from xml file
 
         numberPickerWeight.setMaxValue(600);
         numberPickerWeight.setMinValue(20);
@@ -43,7 +43,7 @@ public class WeightFragment extends Fragment {
         numberPickerInches.setMaxValue(11);
         numberPickerInches.setMinValue(0);
         numberPickerInches.setWrapSelectorWheel(true);
-        numberPickerInches.setValue(6);
+        numberPickerInches.setValue(6); //Sets all values for the initialized numberpickers
 
         buttonWeight.setOnClickListener(new View.OnClickListener() {
 
@@ -55,7 +55,7 @@ public class WeightFragment extends Fragment {
                 int weight = numberPickerWeight.getValue();
 
                 if (inches == 0 && feet == 0) {
-                    Toast.makeText(getActivity(), "Please input a valid height.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.weight_fragment_height, Toast.LENGTH_SHORT).show();
                 } else {
                     int height = (feet * 12) + inches;
 
@@ -70,7 +70,7 @@ public class WeightFragment extends Fragment {
                     homeFragment.setArguments(bundle);
 
                     fragmentTransaction.replace(R.id.fragment_container, homeFragment);
-                    fragmentTransaction.commit();
+                    fragmentTransaction.commit(); //Saves values once button is pressed and then goes to Home Fragment
                 }
             }
         });

@@ -42,24 +42,24 @@ public class RegisterActivity extends AppCompatActivity {
         String passwordConfirm = editTextPasswordConfirm.getText().toString();
 
         if (TextUtils.isEmpty(email)) {
-            Toast.makeText(RegisterActivity.this, "Enter an Email.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, R.string.login_activity_email, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(RegisterActivity.this, "Enter a Password.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, R.string.login_activity_password, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if(password.length() < 6) {
-            Toast.makeText(RegisterActivity.this, "Password must be at least 6 characters",
+            Toast.makeText(RegisterActivity.this, R.string.register_activity_characters,
                     Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (passwordConfirm.equals(password)) {
         } else {
-            Toast.makeText(RegisterActivity.this, "Passwords don't match", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, R.string.register_activity_passwords, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -70,15 +70,15 @@ public class RegisterActivity extends AppCompatActivity {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onComplete(@NonNull Task<AuthResult> task) { //Creates user using email
 
                         if (task.isSuccessful()) {
-                            firebaseAuth.getCurrentUser().sendEmailVerification()
+                            firebaseAuth.getCurrentUser().sendEmailVerification() //Sends email verification to email
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()) {
-                                                Toast.makeText(RegisterActivity.this, "Registered. Check your email", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(RegisterActivity.this, R.string.register_activity_registered, Toast.LENGTH_SHORT).show();
                                                 editTextEmailRegister.setText("");
                                                 editTextPasswordRegister.setText("");
                                                 editTextPasswordConfirm.setText("");
@@ -90,9 +90,9 @@ public class RegisterActivity extends AppCompatActivity {
                                     });
                         } else {
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                Toast.makeText(RegisterActivity.this, "This user already exists", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, R.string.register_activity_exists, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(RegisterActivity.this, "Something's wrong", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, R.string.register_activity_error, Toast.LENGTH_SHORT).show();
                             }
                         }
                         progressDialog.dismiss();
@@ -106,6 +106,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void loginUser(View view) {
-        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+        startActivity(new Intent(RegisterActivity.this, LoginActivity.class)); //Goes back to login when button is pressed
     }
 }

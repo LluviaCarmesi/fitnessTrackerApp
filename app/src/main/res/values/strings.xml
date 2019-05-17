@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">fitnessTrackerApp3</string>
+    <string name="app_name">Get Up</string>
     <string name="text_weight_change">Change Attributes</string>
     <string name="text_calories">Calories:</string>
     <string name="text_steps">Steps:</string>
@@ -8,7 +8,7 @@
     <string name="nav_attribute_text">Change Attributes</string>
     <string name="nav_height_text">Change Height</string>
     <string name="nav_home_text">Home</string>
-    <string name="nav_settings_text">Settings</string>
+    <string name="nav_settings_text">Logout</string>
     <string name="item_share_text">Share</string>
     <string name="nav_header_name">Name</string>
     <string name="nav_header_email">email</string>
@@ -22,7 +22,7 @@
     <string name="edit_text_email">Email</string>
     <string name="button_login">Login</string>
     <string name="button_register">Register</string>
-    <string name="edit_text_password_confirm">Comfirm Password</string>
+    <string name="edit_text_password_confirm">Confirm Password</string>
     <string name="button_logout">Logout</string>
     <string name="textView_monday">Day 1</string>
     <string name="textView_tuesday">Day 2</string>
@@ -32,4 +32,22 @@
     <string name="textView_saturday">Day 6</string>
     <string name="textView_sunday">Day 7</string>
     <string name="button_weekly_progress">Weekly Progress</string>
+    <string name="goal_fragment_motivate">Please try to motivate yourself</string>
+    <string name="goal_fragment_goal">5000</string>
+    <string name="goal_fragment_text_view">Goal:</string>
+    <string name="goal_fragment_text_view_steps">Steps</string>
+    <string name="home_fragment_toast_sensor">No sensor detected. App needs sensor. Sorry.</string>
+    <string name="home_fragment_database">Check Weekly Progress</string>
+    <string name="home_fragment_notification_inactivity_description">Inactive Channel</string>
+    <string name="login_activity_email">Enter an email</string>
+    <string name="login_activity_password">Enter a password</string>
+    <string name="login_activity_progress">Logging in</string>
+    <string name="login_activity_verify">Please verify your email.</string>
+    <string name="login_activity_deny">Email or Password is incorrect</string>
+    <string name="register_activity_characters">Password must be at least 6 characters</string>
+    <string name="register_activity_passwords">Passwords don\'t match </string>
+    <string name="register_activity_registered">Registered. Check your email</string>
+    <string name="register_activity_exists">This user already exists</string>
+    <string name="register_activity_error">Something\'s wrong</string>
+    <string name="weight_fragment_height">Please input a valid height.</string>
 </resources>

@@ -28,7 +28,7 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         textViewProfile = view.findViewById(R.id.text_view_profile);
-        buttonLogout = view.findViewById(R.id.button_logout);
+        buttonLogout = view.findViewById(R.id.button_logout); //Initializes items from xml
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -42,7 +42,7 @@ public class SettingsFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); //Logs out the user when button is pressed. Doesn't allow user to go back to the main activity
 
                 getActivity().startActivity(intent);
             }

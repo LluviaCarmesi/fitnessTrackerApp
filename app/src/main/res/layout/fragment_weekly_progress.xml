@@ -33,7 +33,7 @@
         android:layout_alignStart="@+id/textView_monday"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="166dp"
+        android:layout_marginTop="176dp"
         android:text="@string/textView_wednesday"
         android:textColor="@android:color/black" />
 
@@ -44,7 +44,7 @@
         android:layout_alignStart="@+id/textView_monday"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="241dp"
+        android:layout_marginTop="247dp"
         android:text="@string/textView_thursday"
         android:textColor="@android:color/black" />
 
@@ -66,7 +66,7 @@
         android:layout_alignStart="@+id/textView_monday"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
-        android:layout_marginBottom="108dp"
+        android:layout_marginBottom="116dp"
         android:text="@string/textView_saturday"
         android:textColor="@android:color/black" />
 
@@ -77,7 +77,7 @@
         android:layout_alignStart="@+id/textView_monday"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="43dp"
         android:text="@string/textView_sunday"
         android:textColor="@android:color/black" />
 
@@ -137,5 +137,83 @@
         android:layout_alignStart="@+id/textView_monday_steps"
         android:layout_alignTop="@+id/textView_sunday"
         android:textColor="@android:color/black" />
+
+    <ProgressBar
+        android:id="@+id/progressBar_day_1"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="137dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView_monday"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="13dp"
+        android:background="@android:color/white"
+        android:progressTint="@color/green"
+        android:progressBackgroundTint="#CC0000"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar_day_2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="137dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/progressBar_day_1"
+        android:layout_alignTop="@+id/textView_tuesday"
+        android:background="@android:color/white"
+        android:progressTint="@color/green"
+        android:progressBackgroundTint="#CC0000"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar_day_3"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="137dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/progressBar_day_1"
+        android:layout_alignTop="@+id/textView_wednesday"
+        android:background="@android:color/white"
+        android:progressTint="@color/green"
+        android:progressBackgroundTint="#CC0000"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar_day_4"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="137dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/progressBar_day_1"
+        android:layout_alignTop="@+id/textView_thursday"
+        android:background="@android:color/white"
+        android:progressTint="@color/green"
+        android:progressBackgroundTint="#CC0000"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar_day_5"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="137dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/progressBar_day_1"
+        android:layout_alignTop="@+id/textView_friday"
+        android:background="@android:color/white"
+        android:progressTint="@color/green"
+        android:progressBackgroundTint="#CC0000"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar_day_6"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="137dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/progressBar_day_1"
+        android:layout_alignTop="@+id/textView_saturday"
+        android:background="@android:color/white"
+        android:progressTint="@color/green"
+        android:progressBackgroundTint="#CC0000"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar_day_7"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="137dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/progressBar_day_1"
+        android:layout_alignTop="@+id/textView_sunday"
+        android:background="@android:color/white"
+        android:progressTint="@color/green"
+        android:progressBackgroundTint="#CC0000"/>
 
 </RelativeLayout>
