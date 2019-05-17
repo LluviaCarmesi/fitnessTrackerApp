@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
             editTextPassword = findViewById(R.id.edit_text_password);
             progressDialog = new ProgressDialog(this);
 
-            firebaseAuth = FirebaseAuth.getInstance();
+            firebaseAuth = FirebaseAuth.getInstance(); //If user logged in before, keep them logged in. Else get them to log in
         }
     }
 
@@ -54,12 +54,12 @@ public class LoginActivity extends AppCompatActivity {
         String password = editTextPassword.getText().toString().trim();
 
         if(TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Enter an email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.login_activity_email, Toast.LENGTH_SHORT).show();
             return;
         }
 
         if(TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Enter a password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.login_activity_password, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -71,19 +71,19 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            if(firebaseAuth.getCurrentUser().isEmailVerified()) {
+                            if(firebaseAuth.getCurrentUser().isEmailVerified()) { //Checks if email was verified
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
+                                startActivity(intent); //Clears all task from before so that user doesn't go back to login unless they logout. Also goes to Main Activity.
                             }
                             else {
-                                Toast.makeText(LoginActivity.this, "Please verify your email.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, R.string.login_activity_verify, Toast.LENGTH_SHORT).show();
                             }
                         }
                         else {
-                            Toast.makeText(LoginActivity.this, "Email or Password is incorrect", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, R.string.login_activity_deny, Toast.LENGTH_SHORT).show();
                         }
                         progressDialog.dismiss();
                     }
@@ -93,6 +93,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void register(View view) {
-        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        startActivity(new Intent(LoginActivity.this, RegisterActivity.class)); //Goes to register activity when clicked
     }
 }
