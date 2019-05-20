@@ -1,9 +1,1 @@
-This is the real project. Please pull this code and try to implement the database into this project. Also, help me figure out some things in terms of implementing the Google Maps API and the Notification API as well. Thank you. Also, when you want to push new code into this repository, update this readme file with any changes that you made.
-
-Update #2: I just added some comments and made the launch icon for the app.
-
-Update #3: I added the funcionality to make the notification appear when the user hasn't walked for an hour, however for some reason it comes up silently and isn't noticeable to the user. No sound was added either. Color to the notification also needs to be added.
-
-Update #4: The notification is now noticeable to the user and sound comes whenever the notification comes up. It's the default notification sound that the user has set.
-
-Update #5: The layout has been changed to make it so that the user can view all meters on one screen. Remember when pushing to the repository to only upload the files you've changed. Don't upload everything.
+This is a fitness tracker application for Android Marshmallow and above for our Senior Project. It counts steps, calories lost, and distance in one home page. You can change your height and weight to reflect those different values as well. There is also a notifier to notify your when you haven't taken a step for more than an hour and a half. There is also a notification listener when you are near NYIT of Old Westbury and going a certain speed to park farther away.
